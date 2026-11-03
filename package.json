@@ -1,0 +1,16 @@
+{
+  "name": "iina-remote",
+  "version": "1.0.0",
+  "description": "Control the IINA media player from a phone browser and iOS Shortcuts via the mpv JSON IPC",
+  "type": "module",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/",
+    "ipc": "node scripts/ipc-cli.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

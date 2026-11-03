@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  IINA Remote – launchd LaunchAgent template.
+
+  Replace the __PROJECT_DIR__, __NODE__ and __HOME__ placeholders
+  (see README: "Start automatically"). launchd does NOT expand ~,
+  so full paths are required everywhere.
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>local.iina-remote</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>__NODE__</string>
+    <string>__PROJECT_DIR__/server.js</string>
+  </array>
+
+  <key>WorkingDirectory</key>
+  <string>__PROJECT_DIR__</string>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PORT</key>
+    <string>8080</string>
+    <key>SOCKET_PATH</key>
+    <string>/tmp/iina-socket</string>
+    <!-- Token protection: uncomment and set your own token.
+    <key>TOKEN</key>
+    <string>a-long-random-string</string>
+    -->
+  </dict>
+
+  <!-- Start at login -->
+  <key>RunAtLoad</key>
+  <true/>
+
+  <!-- Restart after a crash (non-zero exit code).
+       Not after a clean shutdown (launchctl bootout / SIGTERM → exit code 0). -->
+  <key>KeepAlive</key>
+  <dict>
+    <key>SuccessfulExit</key>
+    <false/>
+  </dict>
+
+  <!-- Minimum number of seconds between restarts -->
+  <key>ThrottleInterval</key>
+  <integer>10</integer>
+
+  <key>ProcessType</key>
+  <string>Interactive</string>
+
+  <key>StandardOutPath</key>
+  <string>__HOME__/Library/Logs/iina-remote.log</string>
+  <key>StandardErrorPath</key>
+  <string>__HOME__/Library/Logs/iina-remote.log</string>
+</dict>
+</plist>
