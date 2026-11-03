@@ -26,7 +26,7 @@ iPhone / Watch ──HTTP──▶ Node.js server (Mac) ──Unix socket, JSON 
 
 ## Features
 
-- Mobile-friendly dark web UI with large buttons:
+- Mobile-friendly "Liquid Glass" web UI in IINA's colours, with large buttons:
   - play/pause, ±10 s / ±60 s, previous/next, fullscreen, mute;
   - fine-grained volume control;
   - a draggable seek bar for absolute seeking.
@@ -157,11 +157,13 @@ Open `http://<mac-ip>:8080/` on your phone. With a token: `http://<mac-ip>:8080/
   - **hold** the −/+ button to change it continuously;
   - the slider sets it with 1% precision.
 - **Seek bar:** drag it to seek to an absolute position when you release it.
-- **Sleep timer:**
-  - 15 / 30 / 45 / 60 / 90 minutes, or **end of media**;
-  - shows the countdown and the time;
+- **Sleep timer:** tap the moon pill in the top-right corner to open the sleep sheet.
+  - 15 / 30 / 45 / 60 / 90 / 120 minutes, or **end of media**;
+  - the pill and the sheet show the countdown, and the sheet also shows the time;
   - **Cancel sleep timer** turns it off.
   - Details: [Sleep timer](#sleep-timer).
+- **Connection dot** in the top-left pill: green = connected to IINA, orange = IINA is not running, red = the server cannot be reached.
+- **Reduce Transparency** (iOS accessibility setting) replaces the glass with solid surfaces.
 - **Live updates** via Server-Sent Events. The banner at the top shows when:
   - IINA is not running;
   - no file is open;

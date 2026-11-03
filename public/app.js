@@ -16,7 +16,14 @@
     volval: $('volval'),
     tokenform: $('tokenform'),
     tokeninput: $('tokeninput'),
+    subtitle: $('subtitle'),
+    host: $('host'),
+    dot: document.querySelector('#conn .dot'),
     sleep: $('sleep'),
+    sleeppill: $('sleeppill'),
+    sleeppilltext: $('sleeppilltext'),
+    sleepclose: $('sleepclose'),
+    sleepbig: $('sleepbig'),
     sleepinfo: $('sleepinfo'),
     sleepend: $('sleepend'),
     sleepcancel: $('sleepcancel'),
@@ -82,6 +89,10 @@
     els.app.classList.toggle('offline', !(serverReachable && state.connected) || needToken);
     els.app.classList.toggle('noserver', !serverReachable || needToken);
     els.tokenform.hidden = !needToken;
+    const online = serverReachable && !needToken;
+    els.dot.className = 'dot' + (online && state.connected ? ' ok' : online ? ' warn' : '');
+    els.dot.parentElement.title = !online ? 'Server not reachable'
+      : state.connected ? 'Connected to IINA' : 'IINA is not running';
   }
 
   function render() {
@@ -89,6 +100,9 @@
 
     els.title.textContent = state.title || (state.connected ? '—' : 'IINA Remote');
     document.title = state.title ? `${state.pause ? '⏸' : '▶'} ${state.title}` : 'IINA Remote';
+    const inPlaylist = state.playlistCount > 1 && Number.isFinite(state.playlistPos);
+    els.subtitle.hidden = !inPlaylist;
+    els.subtitle.textContent = inPlaylist ? `${state.playlistPos + 1} of ${state.playlistCount}` : '';
 
     const playIcon = els.play.querySelector('use');
     playIcon.setAttribute('href', state.pause === false ? '#i-pause' : '#i-play');
@@ -130,20 +144,38 @@
     els.sleep.classList.toggle('active', !!sl);
     els.sleepcancel.hidden = !sl;
     els.sleepend.classList.toggle('on', sl?.mode === 'end');
+    els.sleeppill.classList.toggle('on', !!sl);
     if (!sl) {
-      els.sleepinfo.textContent = 'off';
+      els.sleeppilltext.textContent = 'Sleep';
+      els.sleepbig.textContent = 'Off';
+      els.sleepinfo.textContent = 'Choose a time below';
     } else if (sl.mode === 'timer') {
-      const left = (sl.endsAt - Date.now()) / 1000;
-      els.sleepinfo.textContent = `in ${fmt(Math.max(0, Math.ceil(left)))} (at ${clock(sl.endsAt)})`;
+      const left = fmt(Math.max(0, Math.ceil((sl.endsAt - Date.now()) / 1000)));
+      els.sleeppilltext.textContent = left;
+      els.sleepbig.textContent = left;
+      els.sleepinfo.textContent = `Mac sleeps at ${clock(sl.endsAt)}`;
     } else {
       // Estimate the remaining time if position and duration are known.
       const left = Number.isFinite(state.duration) && Number.isFinite(state.timePos)
         ? state.duration - state.timePos : null;
+      els.sleeppilltext.textContent = 'End';
+      els.sleepbig.textContent = left != null && left > 0 ? fmt(left) : 'End';
       els.sleepinfo.textContent = left != null && left > 0
-        ? `end of media (in ~${fmt(left)})`
-        : 'end of media';
+        ? 'Mac sleeps when this media ends (approx.)'
+        : 'Mac sleeps when this media ends';
     }
   }
+
+  // Sleep sheet (native <dialog>: Esc and focus handling come for free)
+  els.sleeppill.addEventListener('click', () => els.sleep.showModal());
+  els.sleepclose.addEventListener('click', () => els.sleep.close());
+  els.sleep.addEventListener('click', (e) => {
+    // A click on the ::backdrop is reported on the dialog itself, outside its box.
+    if (e.target !== els.sleep) return;
+    const r = els.sleep.getBoundingClientRect();
+    const inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+    if (!inside) els.sleep.close();
+  });
   setInterval(() => { if (state.sleep?.mode === 'timer') renderSleep(); }, 1000);
 
   function applyState(patch) {
@@ -288,6 +320,7 @@
     }
   });
 
+  els.host.textContent = location.hostname || 'IINA Remote';
   render();
   connect();
 })();

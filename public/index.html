@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
-  <meta name="theme-color" content="#0e0f16">
+  <meta name="theme-color" content="#07080d">
   <meta name="color-scheme" content="dark">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
@@ -20,86 +20,125 @@
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
       <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.14v13.72a1 1 0 0 0 1.5.86l11-6.86a1 1 0 0 0 0-1.72l-11-6.86A1 1 0 0 0 8 5.14z" fill="currentColor"/></symbol>
-      <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1" fill="currentColor"/><rect x="14" y="5" width="4" height="14" rx="1" fill="currentColor"/></symbol>
+      <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1.2" fill="currentColor"/><rect x="14" y="5" width="4" height="14" rx="1.2" fill="currentColor"/></symbol>
       <symbol id="i-prev" viewBox="0 0 24 24"><path d="M6 6h2v12H6zM9.5 12l8.5 6V6z" fill="currentColor"/></symbol>
       <symbol id="i-next" viewBox="0 0 24 24"><path d="M16 6h2v12h-2zM6 18l8.5-6L6 6z" fill="currentColor"/></symbol>
       <symbol id="i-vol" viewBox="0 0 24 24"><path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
       <symbol id="i-mute" viewBox="0 0 24 24"><path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor"/><path d="M16.5 9.5l5 5m0-5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
       <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11z" fill="currentColor"/></symbol>
       <symbol id="i-fs" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 4v16M5 5h11l-2 4 2 4H5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
     </defs>
   </svg>
 
-  <main class="app">
-    <div id="banner" class="banner" role="status" aria-live="polite" hidden></div>
+  <div class="backdrop" aria-hidden="true">
+    <span class="blob b1"></span>
+    <span class="blob b2"></span>
+    <span class="blob b3"></span>
+  </div>
 
-    <section class="now">
-      <h1 id="title" class="title">—</h1>
-      <div class="progress">
-        <input id="seekbar" type="range" min="0" max="1" step="0.1" value="0" aria-label="Position" disabled>
-        <div class="times">
-          <span id="pos">0:00</span>
-          <span id="dur">0:00</span>
-        </div>
+  <main class="app">
+    <header class="topbar">
+      <div class="pill glass" id="conn">
+        <span class="dot" aria-hidden="true"></span>
+        <span id="host">IINA Remote</span>
+      </div>
+      <button class="pill glass" id="sleeppill" type="button" aria-haspopup="dialog" aria-controls="sleep" aria-label="Sleep timer">
+        <svg class="ico-sm" aria-hidden="true"><use href="#i-moon"/></svg>
+        <span id="sleeppilltext">Sleep</span>
+      </button>
+    </header>
+
+    <div id="banner" class="banner glass" role="status" aria-live="polite" hidden></div>
+
+    <section class="now glass">
+      <div class="art" aria-hidden="true">
+        <span class="art-b1"></span>
+        <span class="art-b2"></span>
+        <svg class="art-ico"><use href="#i-play"/></svg>
+      </div>
+      <div class="meta">
+        <h1 id="title" class="title">—</h1>
+        <p id="subtitle" class="subtitle" hidden></p>
       </div>
     </section>
 
-    <section class="transport">
-      <button class="btn" data-api="seek?s=-60" aria-label="Back 60 seconds"><span class="lbl">−60</span></button>
-      <button class="btn" data-api="seek?s=-10" aria-label="Back 10 seconds"><span class="lbl">−10</span></button>
-      <button class="btn btn-play" id="play" data-api="pause" aria-label="Play / pause">
+    <section class="progress">
+      <input id="seekbar" type="range" min="0" max="1" step="0.1" value="0" aria-label="Position" disabled>
+      <div class="times">
+        <span id="pos">0:00</span>
+        <span id="dur">0:00</span>
+      </div>
+    </section>
+
+    <section class="transport glass">
+      <button class="tbtn" data-api="seek?s=-60" aria-label="Back 60 seconds">−60</button>
+      <button class="tbtn" data-api="seek?s=-10" aria-label="Back 10 seconds">−10</button>
+      <button class="tbtn btn-play" id="play" data-api="pause" aria-label="Play / pause">
         <svg class="ico"><use href="#i-play"/></svg>
       </button>
-      <button class="btn" data-api="seek?s=10" aria-label="Forward 10 seconds"><span class="lbl">+10</span></button>
-      <button class="btn" data-api="seek?s=60" aria-label="Forward 60 seconds"><span class="lbl">+60</span></button>
+      <button class="tbtn" data-api="seek?s=10" aria-label="Forward 10 seconds">+10</button>
+      <button class="tbtn" data-api="seek?s=60" aria-label="Forward 60 seconds">+60</button>
     </section>
 
     <section class="row">
-      <button class="btn" data-api="prev" aria-label="Previous"><svg class="ico"><use href="#i-prev"/></svg></button>
-      <button class="btn" data-api="fullscreen" id="fs" aria-label="Fullscreen"><svg class="ico"><use href="#i-fs"/></svg></button>
-      <button class="btn" data-api="next" aria-label="Next"><svg class="ico"><use href="#i-next"/></svg></button>
+      <button class="btn glass" data-api="prev" aria-label="Previous"><svg class="ico"><use href="#i-prev"/></svg></button>
+      <button class="btn glass" data-api="fullscreen" id="fs" aria-label="Fullscreen"><svg class="ico"><use href="#i-fs"/></svg></button>
+      <button class="btn glass" data-api="next" aria-label="Next"><svg class="ico"><use href="#i-next"/></svg></button>
     </section>
 
-    <section class="volume">
-      <div class="vol-head">
-        <button class="btn btn-small" id="mute" data-api="mute" aria-label="Mute">
-          <svg class="ico"><use href="#i-vol"/></svg>
-        </button>
-        <span class="vol-label">Volume</span>
-        <span id="volval" class="vol-val">—</span>
-      </div>
-      <div class="vol-row">
-        <button class="btn btn-small" data-api="volume?d=-2" data-repeat aria-label="Volume down">−</button>
-        <input id="volbar" type="range" min="0" max="100" step="1" value="0" aria-label="Volume" disabled>
-        <button class="btn btn-small" data-api="volume?d=2" data-repeat aria-label="Volume up">+</button>
-      </div>
+    <section class="volume glass">
+      <button class="rbtn" id="mute" data-api="mute" aria-label="Mute">
+        <svg class="ico-sm"><use href="#i-vol"/></svg>
+      </button>
+      <button class="rbtn rbtn-step" data-api="volume?d=-2" data-repeat aria-label="Volume down">−</button>
+      <input id="volbar" type="range" min="0" max="100" step="1" value="0" aria-label="Volume" disabled>
+      <button class="rbtn rbtn-step" data-api="volume?d=2" data-repeat aria-label="Volume up">+</button>
+      <span id="volval" class="vol-val">—</span>
     </section>
 
-    <section class="sleep" id="sleep">
-      <div class="sleep-head">
-        <svg class="ico-sm" aria-hidden="true"><use href="#i-moon"/></svg>
-        <span class="sleep-label">Sleep timer</span>
-        <span id="sleepinfo" class="sleep-info">off</span>
-      </div>
-      <div class="sleep-grid">
-        <button class="chip" data-api="sleep?min=15">15 min</button>
-        <button class="chip" data-api="sleep?min=30">30 min</button>
-        <button class="chip" data-api="sleep?min=45">45 min</button>
-        <button class="chip" data-api="sleep?min=60">1 h</button>
-        <button class="chip" data-api="sleep?min=90">1.5 h</button>
-        <button class="chip" data-api="sleep?end" id="sleepend">End of media</button>
-      </div>
-      <button class="chip chip-cancel" data-api="sleep/cancel" id="sleepcancel" hidden>Cancel sleep timer</button>
-    </section>
-
-    <form id="tokenform" class="tokenform" hidden>
+    <form id="tokenform" class="tokenform glass" hidden>
       <label for="tokeninput">The server requires a token:</label>
       <div class="tokenrow">
         <input id="tokeninput" type="password" autocomplete="current-password" placeholder="TOKEN">
-        <button class="btn btn-small" type="submit">OK</button>
+        <button class="rbtn rbtn-ok" type="submit">OK</button>
       </div>
     </form>
   </main>
+
+  <dialog class="sheet glass" id="sleep" aria-labelledby="sleeptitle">
+    <span class="grabber" aria-hidden="true"></span>
+    <div class="sheet-head">
+      <span class="sheet-ico" aria-hidden="true"><svg class="ico-sm"><use href="#i-moon"/></svg></span>
+      <div class="sheet-titles">
+        <h2 id="sleeptitle">Sleep timer</h2>
+        <p>Pauses IINA, then puts the Mac to sleep</p>
+      </div>
+      <button class="rbtn" id="sleepclose" type="button" aria-label="Close">
+        <svg class="ico-xs"><use href="#i-close"/></svg>
+      </button>
+    </div>
+
+    <div class="countdown">
+      <span id="sleepbig" class="countdown-big">Off</span>
+      <span id="sleepinfo" class="countdown-sub">Choose a time below</span>
+    </div>
+
+    <div class="sleep-grid">
+      <button class="chip" data-api="sleep?min=15">15 min</button>
+      <button class="chip" data-api="sleep?min=30">30 min</button>
+      <button class="chip" data-api="sleep?min=45">45 min</button>
+      <button class="chip" data-api="sleep?min=60">1 h</button>
+      <button class="chip" data-api="sleep?min=90">1.5 h</button>
+      <button class="chip" data-api="sleep?min=120">2 h</button>
+    </div>
+    <button class="chip chip-wide" data-api="sleep?end" id="sleepend">
+      <svg class="ico-sm" aria-hidden="true"><use href="#i-flag"/></svg>
+      At end of media
+    </button>
+    <button class="chip chip-wide chip-cancel" data-api="sleep/cancel" id="sleepcancel" hidden>Cancel sleep timer</button>
+  </dialog>
 
   <script src="app.js"></script>
 </body>
